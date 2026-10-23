@@ -1,6 +1,6 @@
 {% extends "app.html" %}{% block title %}Report {{ a.id }}{% endblock %}{% block body %}
 <div class="card shadow-soft p-8 max-w-4xl mx-auto">
- <div class="flex justify-between items-start gap-4"><div><p class="eyebrow">AICTE SmartVerify</p><h1 class="font-editorial mt-1 text-2xl font-bold text-ink tracking-tight">Validation report · {{ a.id }}</h1>
+ <div class="flex justify-between items-start gap-4"><div><p class="eyebrow"> Vidya-Niriksha</p><h1 class="font-editorial mt-1 text-2xl font-bold text-ink tracking-tight">Validation report · {{ a.id }}</h1>
   <p class="text-sm text-slate-500 mt-1">Institution {{ a.institution_id }} · {{ a.category }} · Status: {{ a.status }} · Dataset: synthetic test data only</p></div>
   <div class="flex flex-wrap gap-2 no-print"><a class="border border-brand-300 text-brand-700 rounded-lg px-3 py-2 text-sm font-semibold" href="{{ url_for('report_export', app_id=a.id, fmt='pdf') }}">PDF</a><a class="border border-brand-300 text-brand-700 rounded-lg px-3 py-2 text-sm font-semibold" href="{{ url_for('report_export', app_id=a.id, fmt='csv') }}">CSV</a><a class="border border-brand-300 text-brand-700 rounded-lg px-3 py-2 text-sm font-semibold" href="{{ url_for('report_export', app_id=a.id, fmt='json') }}">JSON</a></div>
   <button onclick="window.print()" class="border border-brand-300 text-brand-700 hover:bg-brand-50 rounded-lg px-4 py-2 text-sm font-semibold no-print whitespace-nowrap">Print / Save as PDF</button></div>
