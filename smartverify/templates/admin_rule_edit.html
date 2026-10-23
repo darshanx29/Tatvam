@@ -1,0 +1,10 @@
+{% extends "app.html" %}{% block title %}Edit rule{% endblock %}{% block body %}
+<a class="text-sm text-brand-600 font-medium hover:underline" href="{{ url_for('admin_rules') }}">← All rules</a>
+<h1 class="font-editorial mt-2 text-2xl font-bold text-ink tracking-tight">{{ rule_id or 'New rule' }}</h1>
+<p class="text-sm text-slate-500 mt-1">Edit the definition as JSON. Saving validates it and stores a <b>new version</b>; set <code>effective_from</code> (YYYY-MM-DD) to schedule it and <code>"active": false</code> to switch the rule off. Leave the regulatory <code>clause</code> to a subject-matter expert.</p>
+<div class="grid lg:grid-cols-3 gap-6 mt-5"><form method="post" class="lg:col-span-2 card shadow-soft p-5 space-y-3">{{ csrf_input() }}
+ <label class="block text-sm font-medium text-ink" for="def">Definition</label><textarea id="def" name="definition" rows="22" spellcheck="false" class="w-full font-mono text-xs border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-brand-500">{{ text }}</textarea>
+ <label class="block text-sm font-medium text-ink">Change note<input name="note" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2"></label>
+ <button class="bg-brand-600 text-white rounded-lg px-5 py-2 text-sm font-semibold">Save as new version</button></form>
+ <aside class="space-y-4"><section class="card shadow-soft p-4 text-xs text-slate-600"><h2 class="font-semibold text-ink text-sm mb-1">Rule types</h2><p>{{ types|join(', ') }}</p><p class="mt-2"><code>applies_when</code> example: <code>{"institution_type": ["Autonomous"], "academic_year": ["2026-27"]}</code> (keys: institution_type, programme, academic_year).</p></section>
+ {% if history %}<section class="card shadow-soft p-4"><h2 class="font-semibold text-ink text-sm mb-2">Version history</h2><ul class="text-xs space-y-1">{% for h in history %}<li>v{{ h.version }} · {{ h.created_at.strftime('%d-%m-%Y') }} · {{ h.created_by }}{% if h.note %} — {{ h.note }}{% endif %}</li>{% endfor %}</ul></section>{% endif %}</aside></div>{% endblock %}

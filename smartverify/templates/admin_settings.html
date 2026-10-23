@@ -1,0 +1,13 @@
+{% extends "app.html" %}{% block title %}Settings{% endblock %}{% block body %}
+<p class="eyebrow">Administration</p><h1 class="font-editorial mt-1 text-2xl font-bold text-ink tracking-tight">Integrations, settings &amp; model monitoring</h1>
+{% set inp = "w-full border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" %}
+<div class="grid lg:grid-cols-2 gap-6 mt-5"><section class="card shadow-soft p-5"><h2 class="font-editorial font-semibold text-ink mb-3">Settings</h2>
+ <form method="post" class="space-y-3 text-sm">{{ csrf_input() }}
+  <p class="text-xs text-slate-500">Active verification adapter: <b>{{ adapter }}</b>. Replace it only with an officially authorized integration; outbound URLs must pass the SSRF allow-list.</p>
+  <label class="block">Max source-verification attempts<input name="verify_max_attempts" value="{{ vals.verify_max_attempts }}" class="{{ inp }}"></label>
+  <label class="block">Authorized QR / verification hosts (comma-separated)<input name="qr_allowed_hosts" value="{{ vals.qr_allowed_hosts }}" placeholder="verify.example.gov.in" class="{{ inp }}"></label>
+  <label class="block">Retention for closed applications (days)<input name="retention_days" value="{{ vals.retention_days }}" class="{{ inp }}"><span class="text-xs text-slate-500">Applied by <code>python app.py purge</code> (secure deletion).</span></label>
+  <button class="bg-brand-600 text-white rounded-lg px-4 py-2 font-semibold">Save settings</button></form></section>
+ <section class="card shadow-soft p-5"><h2 class="font-editorial font-semibold text-ink mb-3">Model performance</h2>
+  {% if ev %}<p class="text-xs text-slate-500">Last evaluation {{ ev.generated_at }} on {{ ev.n_applications }} labelled synthetic applications.</p><pre class="mt-2 text-xs bg-slate-50 rounded p-3 overflow-auto">{{ ev|tojson(indent=1) }}</pre>{% else %}<p class="text-sm text-slate-500">No evaluation yet. Run <code>python evaluate.py</code>.</p>{% endif %}
+  <h3 class="font-semibold text-ink text-sm mt-4 mb-1">Recent processing runs</h3><ul class="text-xs space-y-1">{% for r in runs %}<li>{{ r.app_id }} · {{ r.status }} · {{ r.duration_s }} s · {{ r.started.strftime('%d-%m %H:%M') }}</li>{% else %}<li>None</li>{% endfor %}</ul></section></div>{% endblock %}

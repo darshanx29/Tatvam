@@ -1,0 +1,5 @@
+{
+  "1-1001": {"name": "Demo Institute of Technology", "type": "Private", "programmes": {"B.Tech Computer Engineering": 120}},
+  "1-2002": {"name": "Sample College of Engineering", "type": "Autonomous", "programmes": {"B.Tech Mechanical Engineering": 120}},
+  "1-3003": {"name": "Scan Test Institute", "type": "Private", "programmes": {"B.Tech Civil Engineering": 60}}
+}

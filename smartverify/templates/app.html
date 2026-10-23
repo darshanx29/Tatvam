@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block header %}{% endblock %}
+{% block main %}
+<div class="flex-1 flex flex-col md:flex-row min-h-screen bg-[#faf8f5]">
+ <aside class="no-print md:w-60 shrink-0 bg-brand-900 text-white md:sticky md:top-0 md:h-screen flex md:flex-col">
+  <a href="{{ url_for('index') }}" class="px-5 h-16 flex items-center">{{ logo(true) }}</a>
+  <nav aria-label="Main" class="flex md:flex-col gap-1 px-3 md:py-4 text-sm font-medium flex-1 overflow-x-auto">
+   {% set cur = request.endpoint %}
+   {% macro nav(href, ic, label, active) %}<a href="{{ href }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg whitespace-nowrap {{ 'bg-brand-600 text-white' if active else 'text-stone-300 hover:bg-white/10 hover:text-white' }}">{{ icon(ic,'w-[18px] h-[18px]') }}{{ label }}</a>{% endmacro %}
+   {{ nav(url_for('dashboard'), 'home', 'Dashboard', cur=='dashboard') }}
+   {{ nav(url_for('dashboard') ~ '#applications', 'doc', 'Applications', cur in ('view_application','report','audit_view','compliance','doc_view')) }}
+   {% if user and user.role == INSTITUTION %}{{ nav(url_for('new_application'), 'plus', 'New application', cur=='new_application') }}{% endif %}
+   {% if user and user.role == ADMIN %}{{ nav(url_for('admin_rules'), 'layers', 'Rules', cur in ('admin_rules','admin_rule_edit')) }}{{ nav(url_for('admin_users'), 'user', 'Users', cur=='admin_users') }}{{ nav(url_for('admin_settings'), 'gear', 'Settings & models', cur=='admin_settings') }}{{ nav(url_for('admin_audit'), 'list', 'System audit', cur=='admin_audit') }}{% endif %}
+  </nav>
+  {% if user %}<div class="hidden md:block p-3 border-t border-white/10">
+   <div class="flex items-center gap-3 px-2 py-2"><span class="w-9 h-9 rounded-full bg-white/10 grid place-items-center">{{ icon('user','w-5 h-5') }}</span>
+    <div class="min-w-0"><div class="text-sm font-semibold truncate">{{ user.name }}</div><div class="text-[11px] text-stone-300 truncate">{{ ROLE_LABEL[user.role] }}</div></div></div>
+   <a href="{{ url_for('logout') }}" class="mt-1 flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-stone-300 hover:bg-white/10 hover:text-white">{{ icon('logout','w-[18px] h-[18px]') }}Sign out</a></div>{% endif %}
+ </aside>
+ <div class="flex-1 min-w-0 flex flex-col">
+  <main id="content" tabindex="-1" class="flex-1 w-full max-w-[1400px] mx-auto px-5 md:px-8 py-7">
+   {% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}
+    <div class="mb-5 px-4 py-3 rounded-lg text-sm font-medium ring-1 ring-inset {{ 'bg-green-50 text-green-800 ring-green-200' if c=='ok' else 'bg-red-50 text-red-800 ring-red-200' }}">{{ m }}</div>
+   {% endfor %}{% endwith %}
+   {% block body %}{% endblock %}
+  </main>
+  <footer class="no-print border-t border-slate-200 bg-[#fdfcfa] text-slate-500 text-xs text-center py-3 px-4">
+   AI findings are preliminary decision-support outputs. Final decisions rest with authorized AICTE officials. Prototype · synthetic data only · not an official AICTE system.</footer>
+ </div>
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}

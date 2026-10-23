@@ -1,0 +1,19 @@
+{% extends "app.html" %}{% block title %}New application{% endblock %}{% block body %}
+<div class="max-w-2xl">
+ <p class="eyebrow">Application intake</p>
+ <h1 class="font-editorial mt-1 text-2xl font-bold text-ink tracking-tight">New application</h1>
+ <p class="mt-1 text-sm text-slate-500">Save a draft and come back, or submit to start preliminary checks. Use synthetic or anonymized data only.</p>
+ <form method="post" enctype="multipart/form-data" class="card shadow-soft p-6 mt-6 space-y-5">{{ csrf_input() }}
+  {% set inp = "mt-1.5 w-full bg-[#fdfcfa] border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500" %}
+  <label class="block text-sm font-medium text-ink">Category<select name="category" class="{{ inp }}">{% for c in cats %}<option>{{ c }}</option>{% endfor %}</select></label>
+  <div class="grid sm:grid-cols-2 gap-4">
+   <label class="block text-sm font-medium text-ink">Academic year<input name="academic_year" value="2026-27" required class="{{ inp }}"></label>
+   <label class="block text-sm font-medium text-ink">Institution type<select name="institution_type" class="{{ inp }}"><option value="">Select…</option>{% for t in ['Private','Government','Autonomous','University'] %}<option {{ 'selected' if rec.type==t }}>{{ t }}</option>{% endfor %}</select></label>
+   <label class="block text-sm font-medium text-ink">Programme<input name="programme" list="progs" required placeholder="e.g. B.Tech Computer Engineering" class="{{ inp }}"><datalist id="progs">{% for p in rec.get('programmes', {}) %}<option value="{{ p }}">{% endfor %}</datalist></label>
+   <label class="block text-sm font-medium text-ink">Intake<input name="intake" inputmode="numeric" pattern="[0-9]*" required class="{{ inp }}"></label>
+  </div>
+  <label class="block text-sm font-medium text-ink">Supporting documents (PDF, JPEG or PNG)<input type="file" name="files" multiple accept=".pdf,.jpg,.jpeg,.png" class="mt-1.5 w-full border-2 border-dashed border-brand-200 bg-brand-50/50 rounded-lg px-4 py-6 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-brand-600 file:px-4 file:py-2 file:text-white file:font-semibold"></label>
+  <div class="flex flex-wrap gap-3">
+   <button name="action" value="submit" class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-6 py-3 text-sm font-semibold shadow-soft">Submit and run preliminary checks {{ icon('arrow','w-4 h-4') }}</button>
+   <button name="action" value="draft" class="border border-brand-300 text-brand-700 hover:bg-brand-50 rounded-lg px-6 py-3 text-sm font-semibold bg-[#fdfcfa]">Save as draft</button></div>
+ </form></div>{% endblock %}

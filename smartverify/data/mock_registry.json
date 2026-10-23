@@ -1,0 +1,58 @@
+{
+  "ACC-2026-001": {
+    "institution_id": "1-1001",
+    "valid_until": "31-12-2028"
+  },
+  "NOC-MH-777": {
+    "institution_id": "1-1001",
+    "valid_until": "31-12-2027"
+  },
+  "AFF-55": {
+    "institution_id": "1-1001",
+    "valid_until": "31-12-2027"
+  },
+  "EOA-2025-9": {
+    "institution_id": "1-1001",
+    "valid_until": "31-05-2027"
+  },
+  "INF-FIRE-12": {
+    "institution_id": "1-1001",
+    "valid_until": "14-01-2027"
+  },
+  "ACC-2024-002": {
+    "institution_id": "1-2002",
+    "valid_until": "30-06-2026"
+  },
+  "NOC-MH-888": {
+    "institution_id": "1-2002",
+    "valid_until": "31-12-2027"
+  },
+  "EOA-2025-4": {
+    "institution_id": "1-2002",
+    "valid_until": "01-01-2026"
+  },
+  "ACC-2026-031": {
+    "institution_id": "1-3003",
+    "valid_until": "31-12-2028"
+  },
+  "NOC-MH-031": {
+    "institution_id": "1-3003",
+    "valid_until": "31-12-2027"
+  },
+  "AFF-031": {
+    "institution_id": "1-3003",
+    "valid_until": "31-12-2027"
+  },
+  "EOA-2025-31": {
+    "institution_id": "1-3003",
+    "valid_until": "31-05-2027"
+  },
+  "INF-FIRE-31": {
+    "institution_id": "1-3003",
+    "valid_until": "14-01-2027"
+  },
+  "ACC-2026-041": {
+    "institution_id": "1-3003",
+    "valid_until": "31-12-2028"
+  }
+}

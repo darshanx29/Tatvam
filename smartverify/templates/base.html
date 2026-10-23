@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}SmartVerify{% endblock %} | AICTE SmartVerify</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{
+ brand:{50:'#fdf8f4',100:'#faeee5',200:'#f4dcce',300:'#ecc3a8',400:'#e29a66',500:'#d97736',600:'#c25e2e',700:'#a34820',800:'#80381a',900:'#1a1412',950:'#140e0b'},
+ slate:{50:'#faf8f5',100:'#f4eee3',200:'#ece5db',300:'#d6cebf',400:'#a8a29e',500:'#78716c',600:'#57534e',700:'#44403c',800:'#292524',900:'#1c1917'},
+ ink:'#1c1917'},
+ fontFamily:{sans:['Plus Jakarta Sans','system-ui','-apple-system','sans-serif'],display:['Newsreader','Georgia','serif'],mono:['JetBrains Mono','ui-monospace','SFMono-Regular','monospace']},
+ boxShadow:{soft:'0 4px 20px -2px rgba(41,37,36,.05),0 2px 6px -1px rgba(194,94,46,.04)',lift:'0 25px 60px -15px rgba(28,25,23,.18),0 10px 25px -10px rgba(194,94,46,.10)'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+ .font-editorial{font-family:'Newsreader',Georgia,serif;letter-spacing:-.01em}
+ .hero-bg{background:radial-gradient(circle at 10% 20%,rgba(254,243,199,.6) 0%,rgba(250,248,245,0) 55%),radial-gradient(circle at 85% 15%,rgba(255,237,213,.55) 0%,rgba(250,248,245,0) 65%),#fcfbfa}
+ .grad-text{background:linear-gradient(90deg,#c25e2e,#d97736 50%,#b45309);-webkit-background-clip:text;background-clip:text;color:transparent}
+ .card{background:#fdfcfa;border:1px solid #ece5db;border-radius:16px}
+ .eyebrow{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#b45309}
+ .nav-dd:hover .dd-menu,.nav-dd:focus-within .dd-menu{display:block}
+ @media print{.no-print{display:none!important}}
+ :focus-visible{outline:2px solid #c25e2e;outline-offset:2px}
+ .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+ .focus\:not-sr-only:focus{position:static;width:auto;height:auto;clip:auto;overflow:visible}
+</style>
+</head>
+<body class="bg-[#faf8f5] text-slate-700 selection:bg-brand-600 selection:text-white min-h-screen flex flex-col antialiased">
+<a href="#content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-white focus:text-brand-700 focus:ring-2 focus:ring-brand-500">Skip to main content</a>
+{% macro badge(text, color) %}<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-{{color}}-50 text-{{color}}-700 ring-1 ring-inset ring-{{color}}-200">{{ text }}</span>{% endmacro %}
+{% macro sev(s) %}{{ badge(s|capitalize, {'high':'red','medium':'amber','low':'sky'}.get(s,'slate')) }}{% endmacro %}
+{% macro state(s) %}{{ badge(s.replace('_',' ')|capitalize, {'open':'amber','accepted':'green','dismissed':'slate','escalated':'red','evidence_requested':'sky','resolved':'green'}.get(s,'slate')) }}{% endmacro %}
+{% macro appstatus(s) %}{{ badge(s, {'Officer review':'amber','Preliminary checks complete':'green','Action required':'red','Verification pending':'sky','Processing':'sky','Closed in prototype':'green','Draft':'slate','Submitted':'slate'}.get(s,'slate')) }}{% endmacro %}
+{% macro vstat(s) %}{{ badge(s.replace('_',' ')|capitalize, {'verified':'green','mismatch_detected':'red','expired':'red','source_unavailable':'slate','manual_review_required':'amber','pending':'sky'}.get(s,'slate')) }}{% endmacro %}
+{% macro icon(name, cls='w-5 h-5') %}{% set P = {
+ 'doc':'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+ 'shield':'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/>',
+ 'shieldcheck':'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5L15.5 10"/>',
+ 'user':'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/>',
+ 'home':'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+ 'plus':'<path d="M12 5v14M5 12h14"/>',
+ 'logout':'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+ 'list':'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+ 'clock':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ 'arrow':'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ 'play':'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',
+ 'check':'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ 'alert':'<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.01"/>',
+ 'chart':'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+ 'chev':'<path d="M6 9l6 6 6-6"/>',
+ 'search':'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+ 'flag':'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+ 'lock':'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+ 'layers':'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+ 'gear':'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'} %}<svg class="{{cls}}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{{ P.get(name, '')|safe }}</svg>{% endmacro %}
+{% macro logo(dark=false) %}<span class="flex items-center gap-3"><span class="w-9 h-9 rounded-full border-2 {{ 'border-stone-200 text-stone-100 bg-white/5' if dark else 'border-ink text-ink bg-[#fbf6ee]' }} grid place-items-center">{{ icon('gear','w-5 h-5') }}</span><span class="text-xl tracking-tight"><span class="font-bold {{ 'text-white' if dark else 'text-ink' }}">AICTE</span> <span class="font-semibold {{ 'text-amber-400' if dark else 'text-brand-600' }}">SmartVerify</span></span></span>{% endmacro %}
+
+{% block header %}
+<header class="sticky top-0 z-40 bg-[#fdfcfa]/90 backdrop-blur-md border-b border-slate-200">
+ <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+  <a href="{{ url_for('index') }}">{{ logo() }}</a>
+  <nav class="hidden md:flex items-center gap-8 text-[15px] font-medium text-slate-600">
+   {% for label, items in [('Platform',[('Capabilities','capabilities'),('Workflow','how')]),('Verification',[('Document checks','capabilities'),('Source verification','capabilities')]),('Compliance',[('Safeguards','safeguards'),('Audit trail','safeguards')]),('Resources',[('FAQ','faq')])] %}
+   <div class="nav-dd relative"><button class="flex items-center gap-1 py-5 hover:text-brand-600" type="button">{{ label }}{{ icon('chev','w-3.5 h-3.5') }}</button>
+    <div class="dd-menu hidden absolute top-full left-0 -mt-1 w-48 card shadow-lift p-1.5">
+     {% for t, anchor in items %}<a href="{{ url_for('index') }}#{{ anchor }}" class="block px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">{{ t }}</a>{% endfor %}</div></div>
+   {% endfor %}
+  </nav>
+  <div class="flex items-center gap-3 text-sm">
+   {% if user %}<a href="{{ url_for('dashboard') }}" class="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold shadow-soft">Open dashboard</a>
+   {% else %}<a href="{{ url_for('login') }}" class="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold shadow-soft">Sign in</a>{% endif %}
+  </div></div></header>
+{% endblock %}
+
+{% block main %}
+<main class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-8">{% block body %}{% endblock %}</main>
+{% endblock %}
+
+{% block footer %}
+<footer class="border-t border-slate-200 bg-slate-50 text-slate-500 text-xs text-center py-3 px-4">
+ AI findings are preliminary decision-support outputs. Final decisions rest with authorized AICTE officials. Prototype · synthetic data only · not an official AICTE system.</footer>
+{% endblock %}
+</body></html>

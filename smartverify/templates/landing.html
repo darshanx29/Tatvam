@@ -1,0 +1,215 @@
+{% extends "base.html" %}{% block title %}AI-assisted application verification{% endblock %}
+{% block main %}
+<main class="flex-1">
+
+<!-- HERO -->
+<section class="hero-bg pt-14 pb-20 overflow-hidden border-b border-slate-200">
+ <div class="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+  <div class="lg:col-span-5 flex flex-col items-start lg:pr-4">
+   <span class="eyebrow mb-4">AI-powered verification for education</span>
+   <h1 class="font-editorial text-4xl sm:text-5xl lg:text-[54px] font-bold tracking-tight leading-[1.12] mb-6"><span class="text-ink block">Trust every application.</span><span class="grad-text block">Verify every document.</span></h1>
+   <p class="text-slate-600 text-[17px] leading-relaxed mb-9 max-w-xl">AICTE SmartVerify uses advanced AI, OCR and rule-based validation to streamline application processing, authenticate documents and support regulatory compliance, with every decision left to an authorized official.</p>
+   <div class="flex flex-wrap items-center gap-4">
+    <a href="{{ url_for('login') }}" class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-[15px] px-7 py-3 rounded-lg shadow-md shadow-brand-600/25 transition">Explore the platform {{ icon('arrow','w-4 h-4') }}</a>
+    <a href="#how" class="group inline-flex items-center gap-2.5 bg-[#fdfcfa] hover:bg-[#fbf6ee] text-ink border border-slate-300 font-semibold text-[15px] px-7 py-3 rounded-lg shadow-sm transition">View workflow <span class="text-brand-600">{{ icon('play','w-3.5 h-3.5') }}</span></a></div>
+   <p class="mt-5 text-xs text-slate-400">Prototype on synthetic data. Not an official AICTE system.</p>
+  </div>
+
+  <!-- product mock -->
+  <div class="lg:col-span-7 flex justify-center">
+   <div class="w-full max-w-[760px] bg-[#fdfcfa] rounded-2xl shadow-lift border border-slate-200 overflow-hidden flex min-h-[440px]">
+    <aside class="hidden sm:flex w-[170px] bg-brand-900 text-slate-300 p-4 shrink-0 flex-col justify-between select-none">
+     <div>
+      <div class="flex items-center gap-2 pb-5 mb-3 border-b border-white/10 text-[12px] font-bold text-slate-50"><span class="text-amber-100">{{ icon('gear','w-4 h-4') }}</span>AICTE <span class="text-amber-500 font-medium">SmartVerify</span></div>
+      <div class="space-y-1.5 text-xs font-medium">
+       {% for ic, l, act in [('home','Dashboard',false),('doc','Applications',true),('shield','Verification',false),('list','Compliance',false),('chart','Reports',false)] %}
+       <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md {{ 'bg-brand-600 text-white font-semibold' if act else 'text-slate-400' }}">{{ icon(ic,'w-3.5 h-3.5') }}{{ l }}</div>{% endfor %}</div></div>
+     <div class="flex items-center gap-2 px-2.5 text-xs text-slate-400 border-t border-white/10 pt-3">{{ icon('gear','w-3.5 h-3.5') }}Settings</div>
+    </aside>
+    <div class="flex-1 min-w-0 flex flex-col">
+     <div class="h-12 border-b border-slate-200 px-4 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2.5"><span class="font-bold text-ink text-[13px]">Application ID: APP-2025-00456</span>
+       <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-lime-50 text-lime-700 ring-1 ring-inset ring-lime-200"><span class="w-1.5 h-1.5 rounded-full bg-lime-600"></span>In Progress</span></div>
+      <span class="hidden md:inline text-[11px] text-slate-500 font-medium">12 Apr 2025, 10:24 AM</span></div>
+     <div class="px-4 border-b border-slate-200 flex gap-5 text-[11px] font-medium text-slate-500">
+      <span class="py-2.5 text-brand-600 border-b-2 border-brand-600 font-semibold">Documents</span><span class="py-2.5">Validation</span><span class="py-2.5">Verification</span><span class="py-2.5">Compliance</span><span class="py-2.5">Audit Trail</span></div>
+     <div class="p-3.5 grid grid-cols-12 gap-3 text-[11px] bg-slate-50/80 flex-1">
+      <div class="col-span-12 md:col-span-4 bg-[#fdfcfa] p-2.5 rounded-lg border border-slate-200 flex flex-col">
+       <span class="font-bold text-slate-600 text-[10px] uppercase tracking-wider mb-2">Document Viewer</span>
+       <div class="flex-1 border border-slate-200 rounded bg-slate-50 p-2 flex flex-col justify-between items-center text-center">
+        <div class="w-full flex flex-col items-center"><div class="w-6 h-6 rounded-full border border-slate-500 grid place-items-center text-[7px] font-bold text-slate-700 mb-1">NBA</div>
+         <div class="text-[8px] font-bold text-ink uppercase leading-tight">National Board of Accreditation</div><div class="text-[7px] italic text-slate-500 mb-2">Certificate of Accreditation</div>
+         <div class="text-[7px] font-semibold text-slate-700 mt-2">XYZ College of Engineering</div></div>
+        <div class="w-full text-[6px] border border-slate-200 my-1"><div class="grid grid-cols-2 bg-slate-100 font-semibold border-b border-slate-200 p-0.5"><span>Programme</span><span>Status</span></div>
+         <div class="grid grid-cols-2 p-0.5 border-b border-slate-100"><span>Computer Science &amp; Eng.</span><span class="text-lime-700 font-medium">Accredited</span></div>
+         <div class="grid grid-cols-2 p-0.5"><span>Electronics &amp; Comm. Eng.</span><span class="text-lime-700 font-medium">Accredited</span></div></div>
+        <div class="w-full flex justify-between items-end pt-1 border-t border-slate-200 text-[6px] text-slate-400"><span>Official Stamp</span><div class="w-5 h-5 bg-slate-100 rounded grid place-items-center text-[5px] font-mono">QR</div></div>
+       </div></div>
+      <div class="col-span-12 md:col-span-4 bg-[#fdfcfa] p-2.5 rounded-lg border border-slate-200">
+       <span class="font-bold text-slate-600 text-[10px] uppercase tracking-wider block mb-2">Extracted Fields</span>
+       <div class="space-y-2">
+        {% for k, v in [('Institution Name','XYZ College of Engineering'),('Certificate Number','NBA/2023/5678'),('Issue Date','15-06-2023'),('Validity','15-06-2028'),('Accredited Programmes','2')] %}
+        <div><label class="text-[9px] text-slate-400 block font-medium">{{ k }}</label><div class="p-1.5 bg-[#fbf8f3] rounded border border-slate-200 font-semibold text-slate-700 text-[10px] truncate">{{ v }}</div></div>{% endfor %}</div></div>
+      <div class="col-span-12 md:col-span-4 bg-[#fdfcfa] p-2.5 rounded-lg border border-slate-200">
+       <span class="font-bold text-slate-600 text-[10px] uppercase tracking-wider block mb-2">Verification Status</span>
+       <div class="space-y-2 mb-3">
+        {% for t, sub, c in [('Source verified','NBA Portal • 12 Apr 2025','lime'),('Fields matched','100% match','lime'),('Manual review','Infrastructure details','amber')] %}
+        <div class="flex items-start gap-1.5"><span class="w-4 h-4 rounded-full bg-{{c}}-100 text-{{c}}-700 grid place-items-center shrink-0 mt-0.5">{{ icon('check' if c=='lime' else 'alert','w-2.5 h-2.5') }}</span><div><div class="font-bold text-ink text-[10px]">{{ t }}</div><div class="text-[9px] text-slate-400">{{ sub }}</div></div></div>{% endfor %}</div>
+       <div class="border-t border-slate-200 pt-2"><span class="font-bold text-slate-600 text-[9px] uppercase tracking-wider block mb-1.5">Evidence Checklist</span>
+        <div class="space-y-1.5 text-[9px]">
+         {% for d, st, c in [('Certificate (PDF)','Verified','lime'),('NOC (PDF)','Verified','lime'),('Photographs (3)','Needs review','amber')] %}
+         <div class="flex items-center justify-between text-slate-600"><span class="flex items-center gap-1"><span class="text-slate-400">{{ icon('doc','w-3 h-3') }}</span>{{ d }}</span><span class="text-[8px] font-medium text-{{c}}-700 bg-{{c}}-50 px-1 rounded">{{ st }}</span></div>{% endfor %}</div></div></div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- FEATURE STRIP -->
+<section class="bg-[#fdfcfa] border-b border-slate-200">
+ <div class="max-w-[1400px] mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 md:divide-x divide-slate-200">
+  {% for ic, t, d in [('doc','OCR & data extraction','Extract key information from scanned and digital documents with page-level confidence.'),('shield','Layered document checks','Detect missing, expired, altered or duplicate documents using rule-based validation.'),('shieldcheck','Explainable compliance results','Get clear, evidence-backed findings aligned with AICTE regulations and guidelines.')] %}
+  <div class="flex gap-4 md:px-8 first:pl-0"><span class="w-12 h-12 shrink-0 rounded-full bg-[#fbf3e6] border border-[#f5dfbe] text-brand-600 grid place-items-center">{{ icon(ic,'w-5 h-5') }}</span>
+   <div><h3 class="font-semibold text-ink">{{ t }}</h3><p class="mt-1 text-sm leading-6 text-slate-500">{{ d }}</p></div></div>{% endfor %}
+ </div>
+</section>
+
+<!-- KEY CAPABILITIES -->
+<section id="capabilities" class="py-20 bg-[#faf8f5]">
+ <div class="max-w-[1400px] mx-auto px-6">
+  <div class="grid lg:grid-cols-2 gap-6 items-end">
+   <div><p class="eyebrow">Key capabilities</p>
+    <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold text-ink tracking-tight">A complete solution for smarter validation</h2></div>
+   <p class="text-slate-500 lg:max-w-md lg:ml-auto">From document authenticity to regulatory compliance, SmartVerify helps officials make faster, more confident decisions.</p></div>
+  <div class="mt-10 grid md:grid-cols-3 gap-6">
+   {% for ic, t, d in [('doc','Document intelligence','Automatically classify documents, extract key fields and check for completeness, expiry and consistency across applications.'),('shieldcheck','Authorized source verification','Validate documents through official portals, APIs, QR codes or digital signatures, wherever available and authorized.'),('user','Human-led review','Flag potential anomalies and compliance gaps for expert review, with a clear audit trail for transparency and accountability.')] %}
+   <div class="card p-7 shadow-soft hover:shadow-lift transition"><span class="w-12 h-12 rounded-full bg-[#fbf3e6] border border-[#f5dfbe] text-brand-600 grid place-items-center">{{ icon(ic,'w-5 h-5') }}</span>
+    <h3 class="mt-5 text-lg font-semibold text-ink">{{ t }}</h3><p class="mt-2 text-sm leading-6 text-slate-500">{{ d }}</p>
+    <span class="mt-5 inline-block text-brand-600">{{ icon('arrow','w-5 h-5') }}</span></div>{% endfor %}
+  </div>
+
+  <!-- detail tabs -->
+  <div class="mt-16 flex flex-wrap gap-2" id="tabs">
+   <button data-t="t1" class="tab px-5 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white">Validation engine</button>
+   <button data-t="t2" class="tab px-5 py-2 rounded-full text-sm font-semibold bg-[#fdfcfa] border border-slate-200 text-slate-600">Anomaly indicators</button>
+   <button data-t="t3" class="tab px-5 py-2 rounded-full text-sm font-semibold bg-[#fdfcfa] border border-slate-200 text-slate-600">Issuer verification</button></div>
+
+  <div id="t1" class="panel mt-8 grid lg:grid-cols-2 gap-10 items-center">
+   <div><h3 class="text-2xl font-bold text-ink">Completeness, expiry and consistency</h3>
+    <p class="mt-3 text-slate-600 leading-7">Documents are classified and their fields extracted with confidence and page reference. A configurable rule set then checks them against the application and each other.</p>
+    <ul class="mt-5 space-y-2.5 text-sm text-slate-700">
+     {% for s in ['Category-based checklist with missing-document detection','Expiry checked on the evaluation date','Institution ID and key fields compared across documents','Every finding shows rule ID, version, observed vs expected value and next step'] %}
+     <li class="flex gap-2.5"><span class="text-brand-600 mt-0.5">{{ icon('check','w-4 h-4') }}</span>{{ s }}</li>{% endfor %}</ul></div>
+   <div class="card shadow-soft p-6 text-sm space-y-3">
+    <div class="flex justify-between items-center"><b class="text-ink">R-EXP-01 · v1.0</b>{{ badge('High','red') }}</div>
+    <div class="text-slate-600">Document must not be expired on evaluation date</div>
+    <div class="grid grid-cols-2 gap-2 text-xs"><div class="bg-slate-50 rounded-lg p-3"><div class="text-slate-400">Observed</div><div class="font-medium text-ink">30-06-2026</div></div><div class="bg-slate-50 rounded-lg p-3"><div class="text-slate-400">Expected</div><div class="font-medium text-ink">on/after 23-10-2026</div></div></div>
+    <div class="text-xs text-slate-500">Source: accreditation.pdf · page 1 · Next step: request renewed certificate</div></div>
+  </div>
+
+  <div id="t2" class="panel hidden mt-8 grid lg:grid-cols-2 gap-10 items-center">
+   <div><h3 class="text-2xl font-bold text-ink">Preliminary anomaly indicators</h3>
+    <p class="mt-3 text-slate-600 leading-7">Deterministic checks surface things a human should look at. They are never presented as proof of misconduct.</p>
+    <ul class="mt-5 space-y-2.5 text-sm text-slate-700">
+     {% for s in ['Exact and near-duplicate document detection','PDF metadata and editing-tool indicators','Irregular date relationships','Each flag carries its evidence and reason'] %}
+     <li class="flex gap-2.5"><span class="text-brand-600 mt-0.5">{{ icon('check','w-4 h-4') }}</span>{{ s }}</li>{% endfor %}</ul></div>
+   <div class="card shadow-soft p-6 text-sm space-y-3">
+    <div class="border-l-4 border-amber-400 bg-amber-50 rounded-lg p-3"><b class="text-ink">Possible anomaly (duplicate)</b><div class="text-xs text-slate-600 mt-1">noc.pdf ↔ noc_copy.pdf · identical file</div></div>
+    <div class="border-l-4 border-amber-400 bg-amber-50 rounded-lg p-3"><b class="text-ink">Possible anomaly (metadata)</b><div class="text-xs text-slate-600 mt-1">Modified 259 days after creation · editing tool in producer field</div></div>
+    <div class="text-xs text-slate-500">Scanning or conversion can change metadata. Officer review required.</div></div>
+  </div>
+
+  <div id="t3" class="panel hidden mt-8 grid lg:grid-cols-2 gap-10 items-center">
+   <div><h3 class="text-2xl font-bold text-ink">Verification through issuing authorities</h3>
+    <p class="mt-3 text-slate-600 leading-7">Submitted details are compared with what an authorized source returns, and the source, timestamp and result are recorded. The prototype uses a mock adapter until real access is authorized.</p>
+    <ul class="mt-5 space-y-2.5 text-sm text-slate-700">
+     {% for s in ['Verified, Mismatch detected, Expired','Verification pending, Manual review required','A source outage is shown as “Source unavailable”, never as a failed check'] %}
+     <li class="flex gap-2.5"><span class="text-brand-600 mt-0.5">{{ icon('check','w-4 h-4') }}</span>{{ s }}</li>{% endfor %}</ul></div>
+   <div class="card shadow-soft p-6 text-sm space-y-2">
+    {% for d, st, c in [('noc.pdf','Mismatch detected','red'),('infra_fire.pdf','Source unavailable','slate'),('accreditation.pdf','Expired','red')] %}
+    <div class="flex items-center justify-between border border-slate-100 rounded-lg px-4 py-3"><span class="text-ink font-medium">{{ d }}</span>{{ badge(st, c) }}</div>{% endfor %}
+    <div class="text-xs text-slate-500 pt-1">Source · timestamp · reference recorded for every request.</div></div>
+  </div>
+ </div>
+</section>
+
+<!-- FEATURE GRID -->
+<section class="py-20 bg-[#fdfcfa]">
+ <div class="max-w-[1400px] mx-auto px-6">
+  <p class="eyebrow">Platform</p>
+  <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold text-ink tracking-tight">Everything an officer needs on one screen</h2>
+  <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+   {% for ic, t, d in [('lock','Role-based workspace','Institutions see only their own applications; officers review, accept, dismiss or escalate with a mandatory reason.'),('chart','Review dashboard','Applications, open findings, missing-document cases, pending verification and escalations at a glance.'),('clock','Audit trail','Who did what, when, under which rule version. Review decisions survive re-validation.'),('layers','Configurable rules','Rules live in versioned configuration with clause references, ready for Handbook alignment.'),('doc','Printable report','Evidence-linked validation report with officer actions, ready to save as PDF.'),('flag','Built to integrate','Standalone MVP with defined interfaces for authorized AICTE and issuer integrations later.')] %}
+   <div class="card p-6 hover:shadow-soft transition"><span class="w-11 h-11 rounded-full bg-[#fbf3e6] border border-[#f5dfbe] text-brand-600 grid place-items-center">{{ icon(ic,'w-5 h-5') }}</span>
+    <h3 class="mt-4 font-semibold text-ink">{{ t }}</h3><p class="mt-2 text-sm leading-6 text-slate-500">{{ d }}</p></div>{% endfor %}
+  </div>
+ </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="py-20 bg-brand-900 text-white relative overflow-hidden">
+ <div class="absolute inset-0 opacity-30" style="background:radial-gradient(50% 60% at 90% 0%,#d97736 0%,transparent 60%)"></div>
+ <div class="relative max-w-[1400px] mx-auto px-6">
+  <p class="eyebrow !text-brand-300">Workflow</p>
+  <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold tracking-tight">From upload to officer decision in eight steps</h2>
+  <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+   {% for t, d in [('Application intake','Institution selects the category and enters details.'),('Document upload','Files are uploaded and stored securely.'),('AI extraction','Documents are classified and fields extracted.'),('Automated validation','Checklist, expiry, consistency and anomaly checks run.'),('Source verification','Authorized sources are queried or manual verification assigned.'),('Compliance assessment','Configured rules are evaluated, gaps identified.'),('Human review','Officials examine evidence and resolve flags.'),('Report and audit','Results, decisions and rule versions are recorded.')] %}
+   <div class="rounded-2xl bg-white/5 border border-white/10 p-5"><div class="w-8 h-8 rounded-full bg-brand-600 grid place-items-center text-xs font-bold">{{ loop.index }}</div><h3 class="mt-3 font-semibold">{{ t }}</h3><p class="mt-1 text-sm text-stone-300 leading-6">{{ d }}</p></div>{% endfor %}
+  </div>
+ </div>
+</section>
+
+<!-- SAFEGUARDS -->
+<section id="safeguards" class="py-20 bg-[#fdfcfa]">
+ <div class="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+  <div><p class="eyebrow">Safeguards</p>
+   <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold text-ink tracking-tight">Decision support, with people in charge</h2>
+   <p class="mt-4 text-slate-600 leading-7">SmartVerify prepares evidence. It never approves, rejects or penalises. Statutory scrutiny, inspections and final decisions stay with the competent AICTE authorities.</p></div>
+  <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+   {% for s in ['Human review before any adverse action','Explainable findings with evidence','Role-based access, per-institution isolation','Every action audit-logged','Synthetic or anonymized data only','No access to restricted databases assumed'] %}
+   <li class="flex gap-3 items-start card p-4 bg-[#faf8f5]"><span class="text-brand-600 mt-0.5">{{ icon('shieldcheck','w-4 h-4') }}</span>{{ s }}</li>{% endfor %}</ul>
+ </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-20 bg-[#faf8f5]">
+ <div class="max-w-3xl mx-auto px-6">
+  <h2 class="font-editorial text-3xl font-bold text-ink text-center tracking-tight">Frequently asked questions</h2>
+  <div class="mt-8 space-y-3">
+   {% for q, a in [('What is SmartVerify?','A prototype decision-support platform that validates institution applications and supporting documents, flags gaps and anomalies with evidence, and helps officials prioritise what needs attention.'),
+     ('Does it approve or reject applications?','No. Findings are preliminary. A result with no findings is shown as a preliminary pass, never as an approval.'),
+     ('Can it detect forged documents?','It surfaces possible anomalies, such as duplicates, metadata irregularities and inconsistent dates. These are indicators for human review, not conclusions about misconduct.'),
+     ('What if an issuing authority is unreachable?','The document is marked Source unavailable and routed for retry or manual verification. An outage is never treated as a failed authenticity check.'),
+     ('Is it connected to the AICTE portal?','Not in the prototype. It runs standalone on synthetic data with a mock issuer adapter, and is designed so authorized integrations can be added later.'),
+     ('How accurate is it?','Accuracy has not been claimed. Figures will be reported only after measurement against a labelled test set.')] %}
+   <details class="group card p-5"><summary class="cursor-pointer font-semibold text-ink flex justify-between list-none">{{ q }}<span class="text-brand-600 text-xl leading-none group-open:rotate-45 transition">+</span></summary><p class="mt-3 text-sm leading-6 text-slate-600">{{ a }}</p></details>{% endfor %}
+  </div>
+ </div>
+</section>
+
+<!-- CTA -->
+<section class="py-16 bg-[#fdfcfa]">
+ <div class="max-w-5xl mx-auto px-6">
+  <div class="rounded-3xl bg-gradient-to-r from-brand-700 to-brand-900 text-white text-center px-8 py-14 shadow-lift">
+   <h2 class="font-editorial text-3xl font-bold tracking-tight">See it run on a synthetic application</h2>
+   <p class="mt-3 text-stone-300">Sign in as an institution or an officer and walk through the full review flow.</p>
+   <a href="{{ url_for('login') }}" class="inline-flex items-center gap-3 mt-7 px-7 py-3.5 rounded-lg bg-[#fdfcfa] text-brand-700 font-semibold hover:bg-brand-50">Open live demo {{ icon('arrow','w-4 h-4') }}</a></div>
+ </div>
+</section>
+</main>
+<script>
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.tab').forEach(x=>{x.className='tab px-5 py-2 rounded-full text-sm font-semibold bg-[#fdfcfa] border border-slate-200 text-slate-600'});
+ b.className='tab px-5 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white';
+ document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
+ document.getElementById(b.dataset.t).classList.remove('hidden');}));
+</script>
+{% endblock %}
+{% block footer %}
+<footer class="bg-brand-950 text-stone-300 text-sm">
+ <div class="max-w-[1400px] mx-auto px-6 py-12 grid md:grid-cols-3 gap-8">
+  <div>{{ logo(true) }}<p class="mt-3 text-xs leading-5 max-w-xs">AI-assisted application validation and document authentication for regulatory scrutiny.</p></div>
+  <div><div class="text-white font-semibold mb-3">Product</div><ul class="space-y-2 text-xs"><li><a class="hover:text-white" href="#capabilities">Capabilities</a></li><li><a class="hover:text-white" href="#how">How it works</a></li><li><a class="hover:text-white" href="#faq">FAQ</a></li></ul></div>
+  <div><div class="text-white font-semibold mb-3">Notice</div><p class="text-xs leading-5">Proposed prototype specification. Not an official AICTE document or system. Synthetic data only. AI findings are decision-support outputs; final decisions rest with authorized officials.</p></div></div>
+</footer>{% endblock %}

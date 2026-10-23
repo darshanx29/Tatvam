@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% block title %}Sign in{% endblock %}
+{% block main %}
+<main class="flex-1 grid lg:grid-cols-2">
+ <div class="hidden lg:flex flex-col justify-center px-16 text-white bg-brand-900 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-40" style="background:radial-gradient(60% 50% at 85% 5%,#d97736 0%,transparent 60%)"></div>
+  <div class="relative"><h1 class="font-editorial text-4xl font-bold leading-tight tracking-tight">Verify earlier.<br>Review with evidence.</h1>
+   <p class="mt-4 text-stone-300 max-w-md leading-7">Sign in to the SmartVerify prototype to validate applications, review findings and keep a complete audit trail.</p>
+   <ul class="mt-8 space-y-3 text-sm text-stone-300">
+    {% for s in ['OCR and rule-based validation','Evidence-linked findings','Human decision on every flag'] %}<li class="flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-white/10 grid place-items-center">{{ icon('check','w-3.5 h-3.5') }}</span>{{ s }}</li>{% endfor %}</ul>
+   <p class="mt-10 text-xs text-stone-300">Synthetic data only · not an official AICTE system</p></div></div>
+ <div class="flex items-center justify-center p-6 hero-bg">
+  <div class="w-full max-w-md">
+   <a href="{{ url_for('index') }}" class="block mb-8">{{ logo() }}</a>
+   {% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}<div role="alert" class="mb-4 px-4 py-3 rounded-lg text-sm bg-red-50 text-red-800 ring-1 ring-inset ring-red-200">{{ m }}</div>{% endfor %}{% endwith %}
+   <h2 class="font-editorial text-3xl font-bold text-ink tracking-tight">Sign in</h2>
+   <p class="mt-1 text-sm text-slate-500">Use your institution or officer account.</p>
+   <form method="post" class="mt-6 space-y-4">{{ csrf_input() }}
+    <label class="block text-sm font-medium text-ink">Email<input name="email" id="email" type="email" placeholder="name@institution.edu" required class="mt-1.5 w-full bg-[#fdfcfa] border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"></label>
+    <label class="block text-sm font-medium text-ink">Password<input name="password" id="password" type="password" placeholder="••••••••" required class="mt-1.5 w-full bg-[#fdfcfa] border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"></label>
+    <button class="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-3.5 font-semibold shadow-soft">Sign in</button></form>
+   <div class="mt-6 card p-4 shadow-soft"><div class="text-xs font-semibold text-slate-500 mb-3">Demo accounts · password demo123 · click to fill</div>
+    <div class="flex flex-wrap gap-2 text-xs">
+     {% for e, l in [('inst2@demo.com','Institution (problem app)'),('inst1@demo.com','Institution (clean app)'),('inst3@demo.com','Institution (scanned images)'),('officer@demo.com','Scrutiny Officer'),('verifier@demo.com','Verification Officer'),('admin@demo.com','Admin')] %}
+     <button type="button" onclick="document.getElementById('email').value='{{ e }}';document.getElementById('password').value='demo123'" class="px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 font-medium hover:bg-brand-100">{{ l }}</button>{% endfor %}</div></div>
+  </div></div>
+</main>{% endblock %}
