@@ -1,4 +1,4 @@
-# SmartVerify - security notes (prototype)
+# Vidya-Niriksha - security notes (prototype)
 
 **Implemented:** role-based access with institution isolation; CSRF tokens on every state-changing request; salted password hashes (Werkzeug);
 password policy for admin-created accounts; login throttling (5 failures / 10 min / IP+email); immediate session revocation (disable user / reset password);

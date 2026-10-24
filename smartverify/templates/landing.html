@@ -20,7 +20,7 @@
    <div class="w-full max-w-[760px] bg-[#fdfcfa] rounded-2xl shadow-lift border border-slate-200 overflow-hidden flex min-h-[440px]">
     <aside class="hidden sm:flex w-[170px] bg-brand-900 text-slate-300 p-4 shrink-0 flex-col justify-between select-none">
      <div>
-      <div class="flex items-center gap-2 pb-5 mb-3 border-b border-white/10 text-[12px] font-bold text-slate-50"><span class="text-amber-100">{{ icon('gear','w-4 h-4') }}</span>AICTE <span class="text-amber-500 font-medium">SmartVerify</span></div>
+      <div class="flex items-center gap-2 pb-5 mb-3 border-b border-white/10 text-[12px] font-bold text-slate-50"><span class="text-amber-100">{{ icon('gear','w-4 h-4') }}</span><span class="text-amber-500 font-medium">Vidya-Niriksha</span></div>
       <div class="space-y-1.5 text-xs font-medium">
        {% for ic, l, act in [('home','Dashboard',false),('doc','Applications',true),('shield','Verification',false),('list','Compliance',false),('chart','Reports',false)] %}
        <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-md {{ 'bg-brand-600 text-white font-semibold' if act else 'text-slate-400' }}">{{ icon(ic,'w-3.5 h-3.5') }}{{ l }}</div>{% endfor %}</div></div>
@@ -81,7 +81,7 @@
   <div class="grid lg:grid-cols-2 gap-6 items-end">
    <div><p class="eyebrow">Key capabilities</p>
     <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold text-ink tracking-tight">A complete solution for smarter validation</h2></div>
-   <p class="text-slate-500 lg:max-w-md lg:ml-auto">From document authenticity to regulatory compliance, SmartVerify helps officials make faster, more confident decisions.</p></div>
+   <p class="text-slate-500 lg:max-w-md lg:ml-auto">From document authenticity to regulatory compliance, Vidya-Niriksha helps officials make faster, more confident decisions.</p></div>
   <div class="mt-10 grid md:grid-cols-3 gap-6">
    {% for ic, t, d in [('doc','Document intelligence','Automatically classify documents, extract key fields and check for completeness, expiry and consistency across applications.'),('shieldcheck','Authorized source verification','Validate documents through official portals, APIs, QR codes or digital signatures, wherever available and authorized.'),('user','Human-led review','Flag potential anomalies and compliance gaps for expert review, with a clear audit trail for transparency and accountability.')] %}
    <div class="card p-7 shadow-soft hover:shadow-lift transition"><span class="w-12 h-12 rounded-full bg-[#fbf3e6] border border-[#f5dfbe] text-brand-600 grid place-items-center">{{ icon(ic,'w-5 h-5') }}</span>
@@ -165,7 +165,7 @@
  <div class="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
   <div><p class="eyebrow">Safeguards</p>
    <h2 class="font-editorial mt-3 text-3xl lg:text-4xl font-bold text-ink tracking-tight">Decision support, with people in charge</h2>
-   <p class="mt-4 text-slate-600 leading-7">SmartVerify prepares evidence. It never approves, rejects or penalises. Statutory scrutiny, inspections and final decisions stay with the competent AICTE authorities.</p></div>
+   <p class="mt-4 text-slate-600 leading-7">Vidya-Niriksha prepares evidence. It never approves, rejects or penalises. Statutory scrutiny, inspections and final decisions stay with the competent AICTE authorities.</p></div>
   <ul class="grid sm:grid-cols-2 gap-3 text-sm">
    {% for s in ['Human review before any adverse action','Explainable findings with evidence','Role-based access, per-institution isolation','Every action audit-logged','Synthetic or anonymized data only','No access to restricted databases assumed'] %}
    <li class="flex gap-3 items-start card p-4 bg-[#faf8f5]"><span class="text-brand-600 mt-0.5">{{ icon('shieldcheck','w-4 h-4') }}</span>{{ s }}</li>{% endfor %}</ul>
@@ -177,7 +177,7 @@
  <div class="max-w-3xl mx-auto px-6">
   <h2 class="font-editorial text-3xl font-bold text-ink text-center tracking-tight">Frequently asked questions</h2>
   <div class="mt-8 space-y-3">
-   {% for q, a in [('What is SmartVerify?','A prototype decision-support platform that validates institution applications and supporting documents, flags gaps and anomalies with evidence, and helps officials prioritise what needs attention.'),
+   {% for q, a in [('What is Vidya-Niriksha?','A prototype decision-support platform that validates institution applications and supporting documents, flags gaps and anomalies with evidence, and helps officials prioritise what needs attention.'),
      ('Does it approve or reject applications?','No. Findings are preliminary. A result with no findings is shown as a preliminary pass, never as an approval.'),
      ('Can it detect forged documents?','It surfaces possible anomalies, such as duplicates, metadata irregularities and inconsistent dates. These are indicators for human review, not conclusions about misconduct.'),
      ('What if an issuing authority is unreachable?','The document is marked Source unavailable and routed for retry or manual verification. An outage is never treated as a failed authenticity check.'),

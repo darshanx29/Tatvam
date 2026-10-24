@@ -1,4 +1,4 @@
-"""AICTE SmartVerify - Flask app.   python app.py seed   then   python app.py"""
+"""AICTE Vidya-Niriksha - Flask app.   python app.py seed   then   python app.py"""
 import json, os, secrets, shutil, sys, time, uuid
 from datetime import datetime, timedelta
 from functools import wraps
@@ -28,7 +28,7 @@ def create_app(config=None):
         print("WARNING: SECRET_KEY not set - using a temporary random key.", file=sys.stderr)
     app.config.update(
         BASE=BASE, UPLOADS=os.path.join(BASE, "uploads"), SECRET_KEY=key,
-        SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", "sqlite:///" + os.path.join(BASE, "smartverify.db")),
+        SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", "sqlite:///" + os.path.join(BASE, "Vidya-Niriksha.db")),
         MAX_CONTENT_LENGTH=25 * 1024 * 1024, SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE") == "1", PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
         ASYNC_PROCESSING=os.environ.get("ASYNC_PROCESSING", "1") == "1", LOGIN_MAX_FAILS=5, LOGIN_WINDOW_S=600)

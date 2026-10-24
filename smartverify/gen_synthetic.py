@@ -7,7 +7,7 @@ REG = {}
 APR1 = ("Programme: B.Tech Computer Engineering", "Approved Intake: 120")
 
 
-def pdf(path, title, lines, producer="SmartVerify-Gen", created="D:20260105100000", mod=None):
+def pdf(path, title, lines, producer="Vidya-Niriksha-Gen", created="D:20260105100000", mod=None):
     doc = fitz.open()
     pg = doc.new_page()
     pg.insert_text((72, 72), title, fontsize=16)

@@ -39,7 +39,7 @@ def to_pdf(d):
     doc = SimpleDocTemplate(buf, pagesize=landscape(A4), leftMargin=24, rightMargin=24, topMargin=24, bottomMargin=24, title=f"Validation report {d['application']['id']}")
     small = st["BodyText"].clone("small"); small.fontSize = 7.5; small.leading = 9
     P = lambda t: Paragraph(str(t or "-").replace("&", "&amp;").replace("<", "&lt;"), small)
-    el = [Paragraph(f"AICTE SmartVerify - Validation report {d['application']['id']}", st["Title"]),
+    el = [Paragraph(f"AICTE Vidya-Niriksha - Validation report {d['application']['id']}", st["Title"]),
           Paragraph(f"Status: {d['application']['status']} | Category {d['application']['category']} | AY {d['application']['academic_year']} | Generated {d['generated_at']}", st["Normal"]),
           Paragraph("Rules used: " + ", ".join(d["rules_used"]), small), Spacer(1, 8), Paragraph("Findings", st["Heading2"])]
     rows = [["Rule", "Severity", "Finding", "Source", "Observed", "Expected", "Next step", "State"]] + \

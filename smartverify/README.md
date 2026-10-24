@@ -1,4 +1,4 @@
-# AICTE SmartVerify - prototype (synthetic data only)
+# AICTE Vidya-Niriksha - prototype (synthetic data only)
 
 AI-assisted application validation, document authentication and compliance checking. **Decision support only** - nothing here approves or rejects an application.
 
@@ -12,7 +12,7 @@ python evaluate.py                       # writes data/eval_report.json (shown o
 python app.py purge                      # retention: secure-delete documents of closed applications past the window
 ```
 Set `SECRET_KEY` and `DOC_ENCRYPTION_KEY` in the environment for anything beyond a local demo (see SECURITY.md). Docker: `docker compose up --build`.
-If you have an older `smartverify.db`, delete it first - the schema changed (re-run `python app.py seed`).
+If you have an older `Vidya-Niriksha.db`, delete it first - the schema changed (re-run `python app.py seed`).
 
 Demo logins: `inst1@demo.com` (clean app) · `inst2@demo.com` (problem app) · `inst3@demo.com` (scanned images) · `officer@demo.com` · `verifier@demo.com` · `admin@demo.com`.
 
