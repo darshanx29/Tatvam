@@ -306,15 +306,25 @@ def register(app):
         return jsonify(app_status=a.status, run=({"status": run.status, "progress": run.progress, "message": run.message} if run else None))
 
     # ------------------------------------------------------------------ application workspace
-    def eoa_tables(docs):
-        """[(doc_name, rows)] structured EoA summaries from stored extracted fields."""
-        from core import extractor
+    def doc_reviews(docs, a):
+        """[(document, review)] for every document: extracted values + Found/Missing/Expired/Mismatch/Not verified status,
+        from the stored fields, the last run's rule results, source verification and anomalies."""
+        from core import docreview
+        rep = a.report or {}
+        assessment, anomalies = rep.get("assessment", []), rep.get("anomalies", [])
+        vers = {v["document"]: v for v in S.effective_verifications(a)}
         out = []
         for d in docs:
-            rows = extractor.eoa_summary(d.doc_type, {f.name: {"value": f.value, "confidence": f.confidence} for f in d.fields})
-            if rows:
-                out.append((d.name, rows))
+            mine_ = [x for x in assessment if d.name in [n.strip() for n in str(x.get("source", "")).split(",")]]
+            anom = [x for x in anomalies if d.name in (x.get("evidence") or [])]
+            out.append((d, docreview.review(d.doc_type, {f.name: {"value": f.value, "confidence": f.confidence} for f in d.fields},
+                                            mine_, vers.get(d.name), anom)))
         return out
+
+    def expired_types(a, docs):
+        """doc types that have an 'Expired ...' finding in the last run (shown as an Expired badge on the checklist)."""
+        names = {x.get("source") for x in (a.report or {}).get("assessment", []) if x.get("status") == "FAIL" and str(x.get("reason", "")).startswith("Expired")}
+        return {d.doc_type for d in docs if d.name in names}
 
     @app.route("/applications/<app_id>")
     @login_required()
@@ -335,7 +345,7 @@ def register(app):
                                verifications=S.effective_verifications(a), run=run, versions=ApplicationVersion.query.filter_by(app_id=a.id).order_by(ApplicationVersion.id.desc()).all(),
                                notes=[x for x in acts if x.action in ("observation", "recommendation", "close")], stored=S.storage().names(a.id),
                                cats=S.categories(), recs=S.RECOMMENDATIONS, mine=can_manage(a, u), uploaded_names=[d.name for d in docs],
-                               infra_docs=[d for d in docs if d.quality], eoa_tables=eoa_tables(docs))
+                               infra_docs=[d for d in docs if d.quality], reviews=doc_reviews(docs, a), expired_types=expired_types(a, docs))
 
     @app.route("/applications/<app_id>/compliance")
     @login_required()
@@ -363,9 +373,21 @@ def register(app):
             npages = max(pymupdf.open(stream=data, filetype="pdf").page_count, 1)
         page = min(max(int(request.args.get("page", 1) or 1), 1), npages)
         S.audit(a.id, "document_viewed", d.name); db.session.commit()
+        raw_text, pairs = "", []
+        try:                                  # re-read the original so the officer sees everything the system could read
+            import tempfile
+            from core import extractor
+            with tempfile.NamedTemporaryFile(suffix=os.path.splitext(d.name)[1], delete=False) as tf:
+                tf.write(data)
+            ex = extractor.extract_pages(tf.name)
+            os.unlink(tf.name)
+            raw_text = "\n".join(p["text"] for p in ex["pages"])
+            pairs = extractor.text_pairs(raw_text)
+        except Exception:
+            pass
         ver = next((v for v in S.effective_verifications(a) if v["document"] == d.name), None)
         flags = Finding.query.filter(Finding.app_id == a.id, Finding.kind == "anomaly", Finding.state != "resolved", Finding.source.contains(d.name)).all()
-        return render_template("doc_view.html", a=a, d=d, page=page, npages=npages, ver=ver, flags=flags, qr=json.loads(d.qr_json or "[]"), mine=can_manage(a, current_user()), eoa_tables=eoa_tables([d]))
+        return render_template("doc_view.html", a=a, d=d, page=page, npages=npages, ver=ver, flags=flags, qr=json.loads(d.qr_json or "[]"), mine=can_manage(a, current_user()), review=doc_reviews([d], a)[0][1], raw_text=raw_text, pairs=pairs)
 
     @app.route("/documents/<int:did>/file")
     @login_required()

@@ -34,7 +34,7 @@
 
 <div class="grid md:grid-cols-2 gap-5 mb-6">
  <section class="card shadow-soft p-5"><h2 class="font-editorial font-semibold text-ink mb-3">Evidence checklist</h2>
-  <ul class="text-sm divide-y divide-slate-100">{% for t, title, rid, ok in checklist %}<li class="flex items-center justify-between py-2"><span class="flex items-center gap-2.5"><span class="w-5 h-5 rounded-full grid place-items-center {{ 'bg-green-100 text-green-600' if ok else 'bg-red-100 text-red-600' }}">{{ icon('check' if ok else 'alert','w-3 h-3') }}</span>{{ title }}</span>{{ badge('Present','green') if ok else badge('Missing','red') }}</li>{% endfor %}</ul>
+  <ul class="text-sm divide-y divide-slate-100">{% for t, title, rid, ok in checklist %}<li class="flex items-center justify-between py-2"><span class="flex items-center gap-2.5"><span class="w-5 h-5 rounded-full grid place-items-center {{ 'bg-green-100 text-green-600' if ok else 'bg-red-100 text-red-600' }}">{{ icon('check' if ok else 'alert','w-3 h-3') }}</span>{{ title }}</span>{% if ok and t in expired_types %}{{ badge('Expired','red') }}{% else %}{{ badge('Present','green') if ok else badge('Missing','red') }}{% endif %}</li>{% endfor %}</ul>
   {% if mine and a.status != 'Processing' %}<form method="post" action="{{ url_for('upload', app_id=a.id) }}" enctype="multipart/form-data" class="mt-4 pt-4 border-t border-slate-100 flex gap-2 text-sm">{{ csrf_input() }}
    <label class="sr-only" for="files">Upload documents</label><input id="files" type="file" name="files" multiple accept=".pdf,.jpg,.jpeg,.png" class="flex-1 min-w-0 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-brand-700 file:font-semibold"><button class="bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-4 py-1.5 font-semibold">Upload</button></form>{% endif %}</section>
 
@@ -49,6 +49,10 @@
       <button class="bg-brand-600 text-white rounded px-3 py-1 font-semibold">Record</button></form></details></div>{% endif %}</div>
   {% else %}<p class="text-sm text-slate-500">None yet.</p>{% endfor %}</div></section></div>
 
+<section class="card shadow-soft mb-6 p-5"><h2 class="font-editorial font-semibold text-ink mb-1">Document review</h2>
+<p class="text-xs text-slate-500 mb-3">What each uploaded document actually says, with anything missing, expired or not matching marked against it.</p>
+{% for rd, rv in reviews %}{% include "_doc_review.html" %}{% else %}<p class="text-sm text-slate-500">No documents uploaded yet.</p>{% endfor %}</section>
+
 <section class="card shadow-soft mb-6 overflow-hidden"><h2 class="font-editorial font-semibold text-ink px-5 py-4 border-b border-slate-100">Findings <span class="ml-1 text-slate-400 font-medium">({{ findings|selectattr('state','in',OPEN_STATES)|list|length }} open)</span></h2>
 {% if a.status != 'Draft' and not findings %}<div class="mx-5 my-3 px-4 py-3 rounded-lg bg-green-50 text-green-800 text-sm ring-1 ring-inset ring-green-200">Preliminary pass: configured checks found no issues. This is not an official approval.</div>{% endif %}
 <div class="overflow-x-auto"><table class="w-full text-sm"><caption class="sr-only">Findings</caption><thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500"><tr>
@@ -61,7 +65,6 @@
   {% elif mine and f.state in OPEN_STATES %}<details class="text-xs"><summary class="cursor-pointer text-brand-600 font-semibold">Respond</summary><form method="post" action="{{ url_for('respond', fid=f.id) }}" class="mt-2 space-y-1">{{ csrf_input() }}<input type="hidden" name="token" value="{{ new_token() }}"><textarea name="text" required rows="2" placeholder="Explanation (upload corrected documents above)" class="{{ inp }}"></textarea><button class="bg-brand-600 text-white rounded px-2 py-1 font-semibold">Send</button></form></details>{% endif %}</td></tr>
 {% else %}<tr><td colspan="9" class="p-6 text-center text-slate-500">No findings.</td></tr>{% endfor %}</tbody></table></div></section>
 
-{% for eoa_doc, eoa in eoa_tables %}{% include "_eoa_summary.html" %}{% endfor %}
 <section class="card shadow-soft mb-6 overflow-hidden"><h2 class="font-editorial font-semibold text-ink px-5 py-4 border-b border-slate-100">Documents</h2>
 <div class="overflow-x-auto"><table class="w-full text-sm"><caption class="sr-only">Uploaded documents</caption><thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" class="px-5 py-3">Document</th><th scope="col">Type</th><th scope="col">Method</th><th scope="col">Confidence</th><th scope="col">Fields</th><th scope="col">Signature</th><th scope="col" class="pr-5"></th></tr></thead><tbody>
 {% for d in docs %}{% set low = d.fields|selectattr('confidence','lt',0.8)|list|length %}<tr class="border-t border-slate-100"><td class="px-5 py-3 font-medium text-ink">{{ d.name }}</td><td>{{ badge(d.doc_type.replace('_',' ')|capitalize,'amber') }}</td><td class="text-xs">{{ d.ocr_method.replace('_',' ') }}</td><td class="text-xs">class {{ d.class_conf }} · ocr {{ d.mean_conf }}</td><td class="text-xs">{{ d.fields|length }}{% if low %} · <span class="text-red-700 font-semibold">{{ low }} low-confidence</span>{% endif %}{% set cor = d.fields|selectattr('corrected_by')|list|length %}{% if cor %} · {{ cor }} corrected{% endif %}</td><td class="text-xs">{{ d.signature or 'none' }}</td>

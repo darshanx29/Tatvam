@@ -219,18 +219,63 @@ DOC_CATEGORY_LABEL = {
     "floor_plan": "Floor plan",
     "infrastructure_photo": "Infrastructure photo",
 }
-EOA_SUMMARY = [("Institution", "institution_name"), ("Permanent ID", "permanent_id"), ("Application ID", "application_id"),
-               ("Region", "region"), ("Institution type", "institution_type"), ("Establishment year", "establishment_year"),
-               ("Approval date", "approval_date"), ("Academic year", "academic_year")]
-
-
 def eoa_summary(doc_type, fields):
-    """fields: {name: {value, confidence}}. Returns [(label, value|None, confidence|None)] for an EoA, else [].
-    A field that could not be read stays visible as 'Not found' so the officer knows to check the original."""
+    """fields: {name: {value, confidence}}. Returns [(label, value|None, confidence|None)] for an EoA, else []."""
+    from core.eoa import EOA_FIELDS
     if doc_type != "approval_record":
         return []
     rows = [("Document category", DOC_CATEGORY_LABEL[doc_type], None)]
-    for label, key in EOA_SUMMARY:
+    for label, key in EOA_FIELDS:
         f = fields.get(key)
         rows.append((label, f["value"] if f else None, f.get("confidence") if f else None))
     return rows
+
+
+def eoa_review(doc_type, fields, findings=()):
+    """What the officer sees for an EoA: every particular listed with its own status, plus the document's problems.
+    fields: {name: {value, confidence}}; findings: FAIL/INCONCLUSIVE rule results whose source is this document.
+    Returns None when the document is not an EoA, else {headline, level, rows:[{label,value,conf,status,level,note}], alerts:[...]}"""
+    from core.eoa import EOA_FIELDS, looks_like_eoa
+    if doc_type != "approval_record" or not (looks_like_eoa(fields) or "certificate_no" not in fields):   # old-format records carry a certificate no.; an unreadable EoA still gets its table (all Missing)
+        return None
+    expired = [f for f in findings if str(f.get("reason", "")).startswith("Expired")]
+    rows = [{"label": "Document category", "value": DOC_CATEGORY_LABEL[doc_type], "conf": None, "status": "Identified", "level": "ok", "note": ""}]
+    missing = []
+    for label, key in EOA_FIELDS:
+        f = fields.get(key)
+        if not f or not str(f.get("value", "")).strip():
+            rows.append({"label": label, "value": None, "conf": None, "status": "Missing", "level": "bad", "note": "Not found - check the original"})
+            missing.append(label)
+            continue
+        conf = f.get("confidence")
+        row = {"label": label, "value": f["value"], "conf": conf, "status": "Found", "level": "ok", "note": ""}
+        if conf is not None and conf < 0.8:
+            row.update(status="Check", level="warn", note="Low OCR confidence - compare with the original")
+        if key == "academic_year" and expired:
+            row.update(status="Expired", level="bad", note=expired[0]["reason"])
+        rows.append(row)
+    alerts = [{"level": "bad" if f.get("status") == "FAIL" else "warn", "text": f"{f.get('title')}: {f.get('reason') or f.get('observed')}"} for f in findings]
+    if expired:
+        headline, level = "Expired", "bad"
+    elif missing:
+        headline, level = f"Incomplete - {len(missing)} field(s) missing", "bad"
+    elif alerts:
+        headline, level = "Needs officer attention", "warn"
+    else:
+        headline, level = "All particulars found", "ok"
+    return {"headline": headline, "level": level, "rows": rows, "alerts": alerts, "missing": missing}
+
+
+_PAIR = re.compile(r"^\s*([A-Za-z][A-Za-z0-9 .&/()'\-]{1,45}?)\s*[:\u2013\-]\s*(\S.*)$")
+
+
+def text_pairs(text, limit=80):
+    """Every 'Label : value' line found in the document text - lets an officer see what was read even where no field pattern matched."""
+    out = []
+    for line in text.splitlines():
+        m = _PAIR.match(line)
+        if m and len(m.group(2)) < 200:
+            out.append((m.group(1).strip(), m.group(2).strip()))
+        if len(out) >= limit:
+            break
+    return out

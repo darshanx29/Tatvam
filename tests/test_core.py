@@ -265,3 +265,75 @@ class EoaExtractionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EoaReviewTests(unittest.TestCase):
+    FULL = dict(institution_name="L M Thapar School of Management", permanent_id="1-3634834011", application_id="1-44638744438",
+                region="North-West", institution_type="Institution Deemed to be University (Pvt)", establishment_year="2007",
+                approval_date="03-Jan-2025", academic_year="2025\u201326", institution_id="1-3634834011", issue_date="03-01-2025")
+
+    def ids(self, **fields):
+        d = [doc("eoa.pdf", "approval_record", **fields)]
+        app = {**APP, "institution_id": "1-3634834011"}
+        return [(f["rule_id"], f["status"]) for f in R.validate(app, d, EVAL, RULES, None)]
+
+    def test_past_academic_year_is_flagged_expired_not_missing(self):
+        ids = self.ids(**self.FULL)
+        self.assertIn(("R-EOA-EXP-01", "FAIL"), ids)
+        self.assertNotIn(("R-EOA-FLD-01", "FAIL"), ids)
+        self.assertNotIn(("R-ID-02", "FAIL"), ids)          # Permanent/Application ID is the EoA's identifier
+        self.assertNotIn(("R-FLD-01", "FAIL"), ids)
+
+    def test_current_academic_year_not_expired_and_missing_fields_listed(self):
+        f = {**self.FULL, "academic_year": "2026-27"}; del f["region"]
+        ids = self.ids(**f)
+        self.assertNotIn(("R-EOA-EXP-01", "FAIL"), ids)
+        self.assertIn(("R-EOA-FLD-01", "FAIL"), ids)
+
+    def test_old_format_approval_record_is_not_held_to_eoa_rules(self):
+        ids = self.ids(institution_id="1-3634834011", issue_date="01-06-2025", certificate_no="EOA-1")
+        self.assertNotIn(("R-EOA-FLD-01", "FAIL"), ids)
+
+    def test_review_lists_every_field_with_status(self):
+        f = {k: {"value": v, "confidence": 0.95} for k, v in self.FULL.items()}; del f["region"]
+        finds = [{"status": "FAIL", "title": "EoA academic year must not have ended", "reason": "Expired: academic year 2025\u201326 ended on 30-06-2026"}]
+        rv = extractor.eoa_review("approval_record", f, finds)
+        st = {r["label"]: r["status"] for r in rv["rows"]}
+        self.assertEqual((st["Region"], st["Academic year"], st["Permanent ID"]), ("Missing", "Expired", "Found"))
+        self.assertEqual(rv["headline"], "Expired")
+        self.assertIsNone(extractor.eoa_review("noc", f))
+
+
+class DocumentReviewTests(unittest.TestCase):
+    def review(self, dtype, registry=None, **fields):
+        from core import docreview
+        f = {k: {"value": v, "confidence": 0.95, "page": 1} for k, v in fields.items()}
+        d = [{"name": "x.pdf", "doc_type": dtype, "ocr_method": "text_layer", "quality": None, "fields": f, "text": ""}]
+        res = [x for x in R.assess(APP, d, EVAL, RULES, None) if x["source"] == "x.pdf"]
+        return docreview.review(dtype, f, res, mock_issuer.verify(f, EVAL, registry=registry or {}), [])
+
+    def status(self, rv):
+        return {r["label"]: r["status"] for r in rv["rows"]}
+
+    def test_expired_mismatched_and_missing_are_each_marked_on_their_field(self):
+        rv = self.review("noc", {"NOC-1": {"institution_id": "1-1001", "valid_until": "31-12-2027"}},
+                         institution_name="X College", institution_id="1-2999", certificate_no="NOC-1", issue_date="10-02-2026", valid_until="31-12-2025")
+        st = self.status(rv)
+        self.assertEqual((st["Institution ID"], st["Valid until"], st["Issued by"]), ("Mismatch", "Expired", "Missing"))
+        self.assertEqual(st["Certificate / reference no."], "Mismatch")      # source registry disagrees with the document
+        self.assertIn("expired", rv["headline"]); self.assertEqual(rv["level"], "bad")
+
+    def test_clean_document_is_all_found(self):
+        rv = self.review("noc", {"NOC-1": {"institution_id": "1-1001", "valid_until": "31-12-2027"}}, institution_name="Demo Institute of Technology",
+                         institution_id="1-1001", certificate_no="NOC-1", issued_by="State", issue_date="10-02-2026", valid_until="31-12-2027")
+        self.assertEqual(rv["headline"], "All checks passed")
+        self.assertEqual(self.status(rv)["Source verification"], "Verified")
+
+    def test_unreadable_document_says_so(self):
+        rv = self.review("affidavit")
+        self.assertTrue(any("No fields could be read" in a["text"] for a in rv["alerts"]))
+        self.assertIn("missing", rv["headline"])
+
+    def test_text_pairs_list_what_was_read(self):
+        self.assertEqual(extractor.text_pairs("Region : North-West\nnot a pair\nYear of Establishment - 2007"),
+                         [("Region", "North-West"), ("Year of Establishment", "2007")])
