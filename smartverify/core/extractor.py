@@ -249,4 +249,39 @@ def extract_fields(pages, method):
                 conf = max(conf, 0.95)
             fields[name] = {"value": val, "confidence": round(conf, 2), "page": pno, "bbox": bbox,
                             "pw": pg.get("w"), "ph": pg.get("h")}
+    # Generic fallback: capture other labelled values beyond the predefined schema.
+    for pno, pg in enumerate(pages, start=1):
+        for raw_line in pg.get("text", "").splitlines():
+            line = re.sub(r"\s+", " ", raw_line).strip(" \t|•-")
+            if not line or len(line) > 300:
+                continue
+            match = re.match(r"^([A-Za-z][A-Za-z0-9 /().,&_-]{1,55}?)\s*[:=–—]\s*(.{1,220})$", line)
+            if not match:
+                continue
+            label, val = match.group(1).strip(), match.group(2).strip()
+            if not val or val.lower() in {"n/a", "na", "none", "-", "not applicable"}:
+                continue
+            key = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
+            if not key or key in fields or len(label.split()) > 8 or len(val.split()) > 35:
+                continue
+            bbox, wconf = _locate(pg.get("words", []), val)
+            conf = wconf if bbox else (0.95 if method == "text_layer" else 0.55)
+            if method == "text_layer":
+                conf = max(conf, 0.95)
+            fields[key] = {"value": val, "confidence": round(conf, 2), "page": pno,
+                           "bbox": bbox, "pw": pg.get("w"), "ph": pg.get("h")}
+
+    # If no labelled fields were found, show the readable extracted page text instead
+    # of an empty table. This is raw OCR/text-layer output, not verified information.
+    if not fields:
+        chunks = []
+        for pno, pg in enumerate(pages, start=1):
+            page_text = (pg.get("text") or "").strip()
+            if page_text:
+                chunks.append(f"Page {pno}: {page_text[:12000]}")
+        if chunks:
+            fields["document_text"] = {"value": "\n\n".join(chunks),
+                "confidence": 0.95 if method == "text_layer" else 0.55, "page": 1,
+                "bbox": None, "pw": pages[0].get("w") if pages else None,
+                "ph": pages[0].get("h") if pages else None}
     return fields

@@ -313,6 +313,38 @@ def register(app):
         u = current_user()
         docs = Document.query.filter_by(app_id=a.id).order_by(Document.name).all()
         have = {d.doc_type for d in docs}
+        # Officer-facing document intelligence: summarize actual OCR values and flag
+        # expiry / certificate-number inconsistencies across the uploaded evidence.
+        cert_docs = {}
+        for doc in docs:
+            values = {f.name: (f.value or '').strip() for f in doc.fields}
+            cert = values.get('certificate_no', '')
+            if cert:
+                cert_docs.setdefault(cert.casefold(), []).append(doc.name)
+        repeated_certs = {name for names in cert_docs.values() if len(names) > 1 for name in names}
+        doc_insights = {}
+        from datetime import datetime as _dt
+        today = _dt.now().date()
+        for doc in docs:
+            values = {f.name: (f.value or '').strip() for f in doc.fields}
+            expiry = values.get('valid_until', '')
+            expiry_status = 'not extracted'
+            if expiry:
+                parsed = None
+                for fmt in ('%d-%m-%Y', '%d/%m/%Y'):
+                    try:
+                        parsed = _dt.strptime(expiry, fmt).date(); break
+                    except ValueError:
+                        pass
+                expiry_status = ('expired' if parsed and parsed < today else 'valid' if parsed else 'check date format')
+            doc_insights[doc.id] = {
+                'values': values,
+                'expiry': expiry,
+                'expiry_status': expiry_status,
+                'repeated_certificate': doc.name in repeated_certs,
+                'low_confidence': sum(1 for f in doc.fields if (f.confidence or 0) < 0.8),
+                'field_count': len(doc.fields),
+            }
         checklist = [(t, title, rid, t in have) for t, title, rid in S.required_docs(a)]
         findings = Finding.query.filter_by(app_id=a.id).order_by(Finding.id).all()
         acts = ReviewAction.query.filter_by(app_id=a.id).order_by(ReviewAction.ts).all()
@@ -325,7 +357,7 @@ def register(app):
                                verifications=S.effective_verifications(a), run=run, versions=ApplicationVersion.query.filter_by(app_id=a.id).order_by(ApplicationVersion.id.desc()).all(),
                                notes=[x for x in acts if x.action in ("observation", "recommendation", "close")], stored=S.storage().names(a.id),
                                cats=S.categories(), recs=S.RECOMMENDATIONS, mine=can_manage(a, u), uploaded_names=[d.name for d in docs],
-                               infra_docs=[d for d in docs if d.quality])
+                               infra_docs=[d for d in docs if d.quality], doc_insights=doc_insights)
 
     @app.route("/applications/<app_id>/compliance")
     @login_required()
@@ -355,7 +387,52 @@ def register(app):
         S.audit(a.id, "document_viewed", d.name); db.session.commit()
         ver = next((v for v in S.effective_verifications(a) if v["document"] == d.name), None)
         flags = Finding.query.filter(Finding.app_id == a.id, Finding.kind == "anomaly", Finding.state != "resolved", Finding.source.contains(d.name)).all()
-        return render_template("doc_view.html", a=a, d=d, page=page, npages=npages, ver=ver, flags=flags, qr=json.loads(d.qr_json or "[]"), mine=can_manage(a, current_user()))
+        # Build officer-facing checks from actual extracted values and existing findings.
+        from datetime import date as _date, datetime as _datetime
+        values = {str(f.name).lower(): (f.value or "").strip() for f in d.fields}
+        expiry_value = values.get("valid_until") or values.get("validity_date") or values.get("expiry_date") or ""
+        expiry_date = None
+        for fmt in ("%d-%m-%Y", "%d/%m/%Y", "%Y-%m-%d", "%d.%m.%Y"):
+            if expiry_value:
+                try:
+                    expiry_date = _datetime.strptime(expiry_value, fmt).date()
+                    break
+                except ValueError:
+                    continue
+        if expiry_date:
+            expiry_status = "expired" if expiry_date < _date.today() else "valid"
+        else:
+            expiry_status = "not_extracted" if not expiry_value else "check_format"
+        all_docs = Document.query.filter_by(app_id=a.id).all()
+        cert_no = values.get("certificate_no") or values.get("certificate_no.") or ""
+        duplicate_docs = []
+        for other in all_docs:
+            if other.id == d.id:
+                continue
+            other_values = {str(f.name).lower(): (f.value or "").strip() for f in other.fields}
+            other_cert = other_values.get("certificate_no") or other_values.get("certificate_no.") or ""
+            if d.sha and other.sha == d.sha or (cert_no and other_cert and cert_no.casefold() == other_cert.casefold()):
+                duplicate_docs.append(other.name)
+        required_by_type = {
+            "accreditation_certificate": ("institution_name", "certificate_no", "issued_by", "issue_date", "valid_until"),
+            "approval_record": ("institution_name", "certificate_no", "issued_by", "issue_date", "valid_until"),
+            "noc": ("institution_name", "certificate_no", "issued_by", "issue_date"),
+            "infrastructure_certificate": ("institution_name", "certificate_no", "issued_by", "issue_date"),
+        }
+        required_fields = required_by_type.get(d.doc_type, ())
+        missing_fields = [key for key in required_fields if not values.get(key)]
+        review_flags = []
+        for flag in flags:
+            review_flags.append({"title": flag.title, "observed": flag.observed, "expected": flag.expected, "reason": flag.reason})
+        source_status = (ver or {}).get("status", "not_checked")
+        mismatch = source_status == "mismatch_detected" or any("mismatch" in ((x["title"] or "") + " " + (x["reason"] or "")).lower() for x in review_flags)
+        suspicious = (d.signature in ("invalid", "present_unvalidated")) or any(any(word in ((x["title"] or "") + " " + (x["reason"] or "")).lower() for word in ("tamper", "forg", "suspicious", "signature")) for x in review_flags)
+        doc_review = {"expiry_value": expiry_value, "expiry_status": expiry_status,
+                      "duplicate_docs": duplicate_docs, "missing_fields": missing_fields,
+                      "mismatch": mismatch, "suspicious": suspicious,
+                      "values": values, "review_flags": review_flags, "source_status": source_status}
+        return render_template("doc_view.html", a=a, d=d, page=page, npages=npages, ver=ver, flags=flags,
+                               doc_review=doc_review, qr=json.loads(d.qr_json or "[]"), mine=can_manage(a, current_user()))
 
     @app.route("/documents/<int:did>/file")
     @login_required()

@@ -5,3 +5,9 @@ __pycache__/
 uploads/
 instance/
 .env
+
+smartverify.zip
+*.zip
+venv/
+__pycache__/
+.env
