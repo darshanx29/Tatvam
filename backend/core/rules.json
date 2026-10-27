@@ -1,0 +1,340 @@
+[
+ {
+  "id": "R-DOC-ACC",
+  "version": "1.0",
+  "title": "Accreditation certificate required",
+  "type": "required_doc",
+  "doc_type": "accreditation_certificate",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "high",
+  "clause": "AICTE APH 2024-27, Chapter I, Clause 1.4(b) - Accreditation Requirement",
+  "remedy": "Request document if rectification is permitted",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-DOC-NOC",
+  "version": "1.0",
+  "title": "NOC / permission letter required",
+  "type": "required_doc",
+  "doc_type": "noc",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "high",
+  "clause": "AICTE APH 2024-27, Chapter I, Clause 1.4(b) - Accreditation Requirement",
+  "remedy": "Request document if rectification is permitted",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-DOC-AFF",
+  "version": "1.0",
+  "title": "Affidavit / undertaking required",
+  "type": "required_doc",
+  "doc_type": "affidavit",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "high",
+  "clause": "AICTE APH 2024-27, Chapter I, Clause 1.4(b) - Accreditation Requirement",
+  "remedy": "Request document if rectification is permitted",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-DOC-APR",
+  "version": "1.0",
+  "title": "Previous approval record required",
+  "type": "required_doc",
+  "doc_type": "approval_record",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "medium",
+  "clause": "AICTE APH 2024-27, Chapter I, Clause 1.4(b) - Accreditation Requirement",
+  "remedy": "Request document if rectification is permitted",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-DOC-INF",
+  "version": "1.0",
+  "title": "Infrastructure certificate required",
+  "type": "required_doc",
+  "doc_type": "infrastructure_certificate",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "medium",
+  "clause": "AICTE APH 2024-27, Chapter I, Clause 1.4(b) - Accreditation Requirement",
+  "remedy": "Request document if rectification is permitted",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-EXP-01",
+  "version": "1.0",
+  "title": "Document must not be expired on evaluation date",
+  "type": "not_expired",
+  "field": "valid_until",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "high",
+  "clause": "<<fill>>",
+  "remedy": "Request renewed certificate",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-ID-01",
+  "version": "1.0",
+  "title": "Institution ID must match application",
+  "type": "match_app_field",
+  "field": "institution_id",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "high",
+  "clause": "<<fill>>",
+  "remedy": "Verify source data and document",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-DATE-01",
+  "version": "1.0",
+  "title": "Issue date must not be after validity date",
+  "type": "date_order",
+  "categories": [
+   "EoA"
+  ],
+  "severity": "medium",
+  "clause": "<<fill>>",
+  "remedy": "Verify document dates with issuer",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "id": "R-OCR-01",
+  "version": "1.0",
+  "title": "Extraction confidence must be adequate",
+  "type": "low_confidence",
+  "threshold": 0.6,
+  "categories": [
+   "EoA"
+  ],
+  "severity": "low",
+  "clause": "n/a",
+  "remedy": "Officer to confirm extracted values",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {}
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-FLD-01",
+  "title": "Mandatory fields must be present",
+  "type": "required_field",
+  "doc_types": [
+   "accreditation_certificate",
+   "noc",
+   "affidavit",
+   "approval_record",
+   "infrastructure_certificate"
+  ],
+  "fields": [
+   "institution_id",
+   "issue_date"
+  ],
+  "severity": "medium",
+  "remedy": "Request a complete / legible copy"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-ID-02",
+  "title": "Certificate must carry an identifier",
+  "type": "has_identifier",
+  "doc_types": [
+   "accreditation_certificate",
+   "noc",
+   "approval_record",
+   "infrastructure_certificate"
+  ],
+  "severity": "medium",
+  "remedy": "Request document bearing its reference number"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-XDOC-01",
+  "title": "Institution name and ID consistent across documents",
+  "type": "cross_doc_consistent",
+  "fields": [
+   "institution_name",
+   "institution_id"
+  ],
+  "severity": "high",
+  "remedy": "Verify source data and documents"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-REC-01",
+  "title": "Institution name must match authorized record",
+  "type": "match_record_name",
+  "severity": "medium",
+  "remedy": "Verify against authorized institutional record"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-REC-02",
+  "title": "Application programme must exist in authorized record",
+  "type": "app_programme_in_record",
+  "severity": "medium",
+  "remedy": "Verify programme with institution / record"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-REC-03",
+  "title": "Approved programme and intake must match authorized record",
+  "type": "match_record_intake",
+  "severity": "high",
+  "remedy": "Verify intake with authorized record"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "n/a",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-OCR-02",
+  "title": "Document must be readable",
+  "type": "unreadable_doc",
+  "severity": "medium",
+  "remedy": "Request a legible scan"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "n/a",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-OCR-03",
+  "title": "Document type must be recognised",
+  "type": "unknown_doc",
+  "severity": "low",
+  "remedy": "Officer to classify the document"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "<<fill from Approval Process Handbook>>",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": true,
+  "applies_when": {},
+  "id": "R-INFRA-01",
+  "title": "Infrastructure evidence quality (advisory)",
+  "type": "infra_quality",
+  "severity": "low",
+  "remedy": "Request additional evidence or refer for inspection"
+ },
+ {
+  "version": "1.0",
+  "categories": [
+   "EoA"
+  ],
+  "clause": "DEMO ONLY - shows applies_when; replace or delete",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "active": false,
+  "applies_when": {
+   "institution_type": [
+    "Autonomous"
+   ]
+  },
+  "id": "R-DEMO-COND",
+  "title": "DEMO conditional rule: floor plan required for Autonomous institutions",
+  "type": "required_doc",
+  "doc_type": "floor_plan",
+  "severity": "low",
+  "remedy": "Request floor plan"
+ }
+]

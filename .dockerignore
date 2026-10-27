@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+*.sqlite3
+instance/
+uploads/
+node_modules/
+dist/
+.venv/
+venv/
+.git/
+.gitignore
+.env
+.env.*
+.DS_Store
+Thumbs.db

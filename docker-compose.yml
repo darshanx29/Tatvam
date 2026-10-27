@@ -1,0 +1,27 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=sqlite:////app/backend/smartverify.db
+      - SECRET_KEY=${SECRET_KEY:-demo-secret-key-change-in-production-32-bytes!}
+      - DOC_ENCRYPTION_KEY=${DOC_ENCRYPTION_KEY:-}
+      - SESSION_COOKIE_SECURE=0
+      - ASYNC_PROCESSING=1
+      - PORT=5000
+    volumes:
+      - uploads_data:/app/backend/uploads
+      - instance_data:/app/backend/instance
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:5000/api/v1/health\")'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  uploads_data:
+  instance_data:

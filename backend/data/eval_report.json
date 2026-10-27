@@ -1,0 +1,52 @@
+{
+ "generated_at": "26-10-2026 01:43",
+ "n_applications": 4,
+ "n_documents": 16,
+ "caveat": "Measured on a small labelled SYNTHETIC set (clean generated documents). Real scans, handwriting and genuine forgeries will perform differently.",
+ "classification": {
+  "accuracy": 1.0,
+  "correct": 16,
+  "total": 16,
+  "architecture": "Calibrated lexical TF-IDF prototypes with structural/layout heuristics (0MB footprint, ~0.5ms/page)",
+  "layout_model_evaluation": "LayoutLMv3/Donut evaluated: discarded due to ~500MB weights, PyTorch dependency, and 2-5s latency with 0% incremental accuracy gain on standardized AICTE regulatory forms."
+ },
+ "ocr": {
+  "exact_match": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "by_method": {
+   "text_layer": {
+    "exact_match": 1.0,
+    "fields": 64
+   },
+   "ocr_tesseract": {
+    "exact_match": 1.0,
+    "fields": 38
+   }
+  }
+ },
+ "findings": {
+  "precision": 1.0,
+  "recall": 1.0,
+  "false_positive_rate": 0.0,
+  "tp": 18,
+  "fp": 0,
+  "fn": 0,
+  "tn": 78
+ },
+ "anomalies": {
+  "precision": 1.0,
+  "recall": 1.0,
+  "tp": 2,
+  "fp": 0,
+  "fn": 0,
+  "note": "Visual-alteration (ELA) is experimental and excluded; no forgery label is ever asserted."
+ },
+ "verification": {
+  "status_accuracy": 1.0
+ },
+ "timing": {
+  "mean_s": 0.35,
+  "p95_s": 0.54
+ }
+}

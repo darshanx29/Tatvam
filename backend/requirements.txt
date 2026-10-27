@@ -1,0 +1,23 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+starlette>=0.36.0
+itsdangerous>=2.2.0
+werkzeug>=3.0.0
+pydantic>=2.0.0
+python-multipart>=0.0.9
+sqlalchemy>=2.0.0
+pymupdf>=1.24
+pillow>=10.1
+numpy>=1.26
+opencv-python-headless>=4.9
+pytesseract>=0.3.10
+cryptography>=42.0.0
+reportlab>=4.0
+
+# Testing & Client
+httpx>=0.27.0
+pytest>=8.0.0
+
+# Optional hardening / scale-out:
+#   psycopg2-binary    (PostgreSQL: set DATABASE_URL=postgresql+psycopg2://...)
+#   pyhanko            (cryptographic validation of embedded PDF digital signatures)
